@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌸 بازی آموزشی چندضلعی‌ها - نرگس اکبری</title>
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazirmatn', Tahoma, sans-serif; }
+  
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 25%, #fbc2eb 50%, #a18cd1 75%, #84fab0 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+  
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .bubble {
+    position: fixed;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    animation: float 20s infinite ease-in-out;
+    z-index: 0;
+  }
+  .bubble:nth-child(1) { width: 80px; height: 80px; top: 10%; left: 10%; animation-delay: 0s; }
+  .bubble:nth-child(2) { width: 120px; height: 120px; top: 70%; left: 80%; animation-delay: 2s; }
+  .bubble:nth-child(3) { width: 60px; height: 60px; top: 40%; left: 90%; animation-delay: 4s; }
+  .bubble:nth-child(4) { width: 100px; height: 100px; top: 80%; left: 20%; animation-delay: 6s; }
+  .bubble:nth-child(5) { width: 70px; height: 70px; top: 20%; left: 70%; animation-delay: 8s; }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(180deg); }
+  }
+  
+  .game-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    padding: 40px;
+    max-width: 850px;
+    width: 100%;
+    box-shadow: 0 25px 70px rgba(255, 105, 180, 0.3);
+    position: relative;
+    z-index: 1;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+  }
+  
+  h1 {
+    text-align: center;
+    background: linear-gradient(135deg, #ff6b9d, #c44569, #8e44ad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: -1px;
+  }
+  
+  .subtitle {
+    text-align: center;
+    color: #8e44ad;
+    margin-bottom: 25px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .welcome-screen { text-align: center; padding: 20px 10px; }
+  .welcome-screen h2 { 
+    color: #c44569; 
+    margin-bottom: 20px; 
+    font-size: 28px; 
+    font-weight: 800;
+  }
+  .welcome-screen .emoji-big { 
+    font-size: 90px; 
+    margin-bottom: 15px; 
+    animation: bounce 2s infinite;
+    display: inline-block;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  
+  .input-group { 
+    margin-bottom: 18px; 
+    text-align: right; 
+  }
+  .input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #8e44ad;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .input-group label .icon { margin-left: 5px; }
+  .input-group input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #fbc2eb;
+    border-radius: 15px;
+    font-size: 16px;
+    transition: all 0.3s;
+    font-family: 'Vazirmatn';
+    background: #fff5f8;
+  }
+  .input-group input:focus {
+    outline: none;
+    border-color: #ff6b9d;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.2);
+    transform: translateY(-2px);
+  }
+  .input-group input::placeholder { color: #c44569; opacity: 0.5; }
+  
+  .start-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, #ff6b9d, #c44569);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s;
+    box-shadow: 0 8px 20px rgba(255, 107, 157, 0.4);
+    font-family: 'Vazirmatn';
+  }
+  .start-btn:disabled {
+    background: #ddd;
+    cursor: not-allowed;
+    opacity: 0.5;
+    box-shadow: none;
+  }
+  .start-btn:not(:disabled):hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(255, 107, 157, 0.5);
+  }
+  
+  .info-bar {
+    display: flex;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #fff5f8, #fbc2eb);
+    padding: 15px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+    border: 2px solid #fbc2eb;
+  }
+  .info-item { text-align: center; flex: 1; min-width: 80px; }
+  .info-item .label { font-size: 12px; color: #8e44ad; font-weight: 600; }
+  .info-item .value { 
+    font-size: 22px; 
+    font-weight: 900; 
+    color: #c44569; 
+    margin-top: 5px; 
+  }
+  
+  .progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #fbc2eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6b9d, #c44569, #8e44ad);
+    transition: width 0.5s;
+    border-radius: 10px;
+  }
+  
+  .teach-header {
+    background: linear-gradient(135deg, #ff6b9d, #c44569);
+    color: white;
+    padding: 25px;
+    border-radius: 25px;
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px rgba(255, 107, 157, 0.3);
+  }
+  .teach-header .teach-num { font-size: 15px; opacity: 0.9; font-weight: 600; }
+  .teach-header .teach-title { font-size: 26px; font-weight: 900; margin-top: 10px; }
+  .teach-header .teach-subtitle { font-size: 16px; margin-top: 8px; opacity: 0.95; }
+  
+  .teach-content {
+    background: linear-gradient(135deg, #fff5f8, #ffffff);
+    border: 3px solid #fbc2eb;
+    border-radius: 25px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(255, 107, 157, 0.1);
+    max-height: 500px;
+    overflow-y: auto;
+  }
+  .teach-content::-webkit-scrollbar { width: 10px; }
+  .teach-content::-webkit-scrollbar-track { background: #fbc2eb; border-radius: 10px; }
+  .teach-content::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #ff6b9d, #c44569); border-radius: 10px; }
+  
+  .teach-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px dashed #fbc2eb;
+  }
+  .teach-section:last-child { border-bottom: none; margin-bottom: 0; }
+  
+  .teach-section h3 {
+    color: #c44569;
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .teach-section p {
+    color: #2d3436;
+    font-size: 17px;
+    line-height: 2;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  
+  .teach-svg-box {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    margin: 15px 0;
+    border: 2px solid #fbc2eb;
+  }
+  .teach-svg-box svg {
+    max-width: 200px;
+    height: auto;
+    filter: drop-shadow(0 6px 12px rgba(255, 107, 157, 0.2));
+  }
+  .teach-svg-box .caption {
+    color: #8e44ad;
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 10px;
+  }
+  
+  .key-point {
+    background: linear-gradient(135deg, #a8e6cf, #88d8b0);
+    padding: 18px;
+    border-radius: 18px;
+    margin: 15px 0;
+    border-right: 6px solid #28a745;
+  }
+  .key-point .kp-title {
+    color: #155724;
+    font-weight: 900;
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+  .key-point p {
+    color: #155724;
+    font-size: 16px;
+    margin: 0;
+  }
+  
+  .warning-point {
+    background: linear-gradient(135deg, #ffd3b6, #ffaaa5);
+    padding: 18px;
+    border-radius: 18px;
+    margin: 15px 0;
+    border-right: 6px solid #dc3545;
+  }
+  .warning-point .wp-title {
+    color: #721c24;
+    font-weight: 900;
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+  .warning-point p {
+    color: #721c24;
+    font-size: 16px;
+    margin: 0;
+  }
+  
+  .example-box {
+    background: #fff5f8;
+    padding: 18px;
+    border-radius: 18px;
+    margin: 15px 0;
+    border: 2px solid #fbc2eb;
+  }
+  .example-box .ex-title {
+    color: #c44569;
+    font-weight: 900;
+    font-size: 17px;
+    margin-bottom: 10px;
+  }
+  .example-box p {
+    color: #2d3436;
+    font-size: 16px;
+    margin: 5px 0;
+  }
+  
+  .start-quiz-btn {
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(135deg, #8e44ad, #c44569);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 22px;
+    font-weight: 900;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 10px 25px rgba(142, 68, 173, 0.4);
+    font-family: 'Vazirmatn';
+    transition: all 0.3s;
+  }
+  .start-quiz-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(142, 68, 173, 0.5);
+  }
+  
+  .stage-header {
+    background: linear-gradient(135deg, #ff6b9d, #c44569);
+    color: white;
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px rgba(255, 107, 157, 0.3);
+  }
+  .stage-header .stage-num { font-size: 14px; opacity: 0.9; font-weight: 600; }
+  .stage-header .stage-title { font-size: 24px; font-weight: 900; margin-top: 8px; }
+  
+  .question-box {
+    background: linear-gradient(135deg, #fff5f8, #ffffff);
+    border: 3px solid #fbc2eb;
+    border-radius: 25px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(255, 107, 157, 0.1);
+  }
+  .question-text {
+    font-size: 20px;
+    color: #2d3436;
+    line-height: 1.9;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
+  }
+  .difficulty-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .diff-easy { background: linear-gradient(135deg, #a8e6cf, #88d8b0); color: #155724; }
+  .diff-medium { background: linear-gradient(135deg, #ffd3b6, #ffaaa5); color: #856404; }
+  .diff-hard { background: linear-gradient(135deg, #ff8b94, #ff6b9d); color: white; }
+  
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  .option-btn {
+    padding: 18px;
+    background: white;
+    border: 3px solid #fbc2eb;
+    border-radius: 18px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+    font-family: 'Vazirmatn';
+    color: #2d3436;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(255, 107, 157, 0.1);
+  }
+  .option-btn:hover:not(.disabled) {
+    border-color: #ff6b9d;
+    background: #fff5f8;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(255, 107, 157, 0.2);
+  }
+  .option-btn.correct {
+    background: linear-gradient(135deg, #a8e6cf, #88d8b0);
+    border-color: #28a745;
+    color: #155724;
+    font-weight: 800;
+    animation: pulse 0.5s;
+  }
+  .option-btn.wrong {
+    background: linear-gradient(135deg, #ff8b94, #ff6b9d);
+    border-color: #dc3545;
+    color: white;
+    animation: shake 0.5s;
+  }
+  .option-btn.disabled { pointer-events: none; }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  
+  .feedback {
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    line-height: 1.9;
+    display: none;
+    font-weight: 600;
+  }
+  .feedback.show { display: block; animation: slideIn 0.4s; }
+  .feedback.success { 
+    background: linear-gradient(135deg, #a8e6cf, #88d8b0); 
+    color: #155724; 
+    border: 3px solid #28a745; 
+  }
+  .feedback.error { 
+    background: linear-gradient(135deg, #ffd3b6, #ffaaa5); 
+    color: #721c24; 
+    border: 3px solid #dc3545; 
+  }
+  .feedback .fb-title { font-weight: 900; font-size: 18px; margin-bottom: 8px; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .next-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #8e44ad, #c44569);
+    color: white;
+    border: none;
+    border-radius: 18px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0 8px 20px rgba(142, 68, 173, 0.3);
+    font-family: 'Vazirmatn';
+    transition: all 0.3s;
+  }
+  .next-btn.show { display: block; }
+  .next-btn:hover { 
+    transform: translateY(-3px); 
+    box-shadow: 0 12px 25px rgba(142, 68, 173, 0.4); 
+  }
+  
+  .report-screen { text-align: center; padding: 20px 10px; }
+  .report-screen h2 { 
+    color: #c44569; 
+    margin-bottom: 15px; 
+    font-size: 32px;
+    font-weight: 900;
+  }
+  .student-name {
+    font-size: 26px;
+    background: linear-gradient(135deg, #ff6b9d, #8e44ad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+    margin-bottom: 15px;
+  }
+  .report-emoji { 
+    font-size: 100px; 
+    margin: 15px 0; 
+    animation: bounce 2s infinite;
+    display: inline-block;
+  }
+  .report-score {
+    font-size: 56px;
+    background: linear-gradient(135deg, #ff6b9d, #8e44ad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+    margin: 20px 0;
+  }
+  .report-details {
+    background: linear-gradient(135deg, #fff5f8, #fbc2eb);
+    border-radius: 25px;
+    padding: 25px;
+    margin: 25px 0;
+    text-align: right;
+    border: 3px solid #fbc2eb;
+  }
+  .report-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 2px dashed #fbc2eb;
+    font-size: 16px;
+  }
+  .report-row:last-child { border-bottom: none; }
+  .report-row .label { color: #8e44ad; font-weight: 700; }
+  .report-row .value { font-weight: 900; color: #c44569; }
+  
+  .feedback-message {
+    background: linear-gradient(135deg, #ff6b9d, #c44569, #8e44ad);
+    color: white;
+    padding: 25px;
+    border-radius: 25px;
+    margin: 25px 0;
+    font-size: 17px;
+    line-height: 2;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(255, 107, 157, 0.3);
+  }
+  .stage-analysis {
+    background: linear-gradient(135deg, #fff5f8, #fbc2eb);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 15px 0;
+    text-align: right;
+    border: 2px solid #fbc2eb;
+  }
+  .stage-analysis h4 { 
+    color: #8e44ad; 
+    margin-bottom: 12px; 
+    font-size: 18px;
+    font-weight: 800;
+  }
+  
+  .restart-btn {
+    padding: 18px 50px;
+    background: linear-gradient(135deg, #ff6b9d, #c44569);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 20px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 10px 25px rgba(255, 107, 157, 0.4);
+    font-family: 'Vazirmatn';
+    transition: all 0.3s;
+  }
+  .restart-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(255, 107, 157, 0.5);
+  }
+  
+  .footer {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 3px dashed #fbc2eb;
+    color: #8e44ad;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .footer .designer { 
+    color: #c44569; 
+    font-weight: 900;
+    font-size: 15px;
+  }
+  
+  @media (max-width: 600px) {
+    .game-container { padding: 25px 20px; }
+    h1 { font-size: 26px; }
+    .options-grid { grid-template-columns: 1fr; }
+    .question-text { font-size: 17px; }
+    .info-bar { padding: 10px; }
+    .info-item .value { font-size: 18px; }
+    .teach-content { padding: 20px; }
+    .teach-section h3 { font-size: 18px; }
+    .teach-section p { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+
+<div class="game-container" id="gameContainer"></div>
+
+<script>
+const questionsBank = {
+  stage1: [
+    {
+      question: "کدام یک از موارد زیر یک «چندضلعی» است؟",
+      options: [
+        { text: "مثلث", correct: true },
+        { text: "دایره", correct: false },
+        { text: "خط باز", correct: false },
+        { text: "ضربدر", correct: false }
+      ],
+      explanation: "چندضلعی یک خط شکسته بسته است که اضلاع آن همدیگر را قطع نکنند. مثلث این ویژگی را دارد اما دایره ضلع ندارد، خط باز بسته نیست و ضربدر اضلاعش همدیگر را قطع می‌کنند."
+    },
+    {
+      question: "چندضلعی منتظم چه ویژگی دارد؟",
+      options: [
+        { text: "فقط اضلاعش برابر باشند", correct: false },
+        { text: "فقط زاویه‌هایش برابر باشند", correct: false },
+        { text: "هم اضلاع و هم زاویه‌هایش برابر باشند", correct: true },
+        { text: "مرکز تقارن داشته باشد", correct: false }
+      ],
+      explanation: "چندضلعی منتظم باید دو شرط را همزمان داشته باشد: ۱) تمام اضلاعش با هم برابر باشند ۲) تمام زاویه‌های داخلی‌اش با هم برابر باشند."
+    },
+    {
+      question: "نام چندضلعی‌ای که ۶ ضلع دارد چیست؟",
+      options: [
+        { text: "پنج‌ضلعی", correct: false },
+        { text: "شش‌ضلعی", correct: true },
+        { text: "هفت‌ضلعی", correct: false },
+        { text: "هشت‌ضلعی", correct: false }
+      ],
+      explanation: "نام‌گذاری چندضلعی‌ها بر اساس تعداد اضلاع آن‌ها انجام می‌شود."
+    },
+    {
+      question: "کدام شکل یک «چندضلعی محدب» است؟",
+      options: [
+        { text: "پنج‌ضلعی محدب", correct: true },
+        { text: "ستاره پنج‌پر", correct: false },
+        { text: "شکل L", correct: false },
+        { text: "پیکان", correct: false }
+      ],
+      explanation: "در چندضلعی محدب، تمام زاویه‌های داخلی کمتر از ۱۸۰ درجه هستند. ستاره، L و پیکان همگی مقعرند."
+    },
+    {
+      question: "به نقطه‌ای که دو ضلع یک چندضلعی به هم می‌رسند چه می‌گویند؟",
+      options: [
+        { text: "ضلع", correct: false },
+        { text: "رأس", correct: true },
+        { text: "زاویه", correct: false },
+        { text: "قطر", correct: false }
+      ],
+      explanation: "رأس نقطه‌ای است که دو ضلع متوالی یک چندضلعی به هم می‌رسند."
+    },
+    {
+      question: "کدام یک از شکل‌های زیر چندضلعی منتظم است؟",
+      options: [
+        { text: "مربع", correct: true },
+        { text: "مستطیل", correct: false },
+        { text: "لوزی", correct: false },
+        { text: "ذوزنقه", correct: false }
+      ],
+      explanation: "مربع هم تمام اضلاعش برابرند و هم تمام زاویه‌هایش ۹۰ درجه است."
+    },
+    {
+      question: "یک هشت‌ضلعی چند رأس و چند ضلع دارد؟",
+      options: [
+        { text: "۸ رأس و ۱۶ ضلع", correct: false },
+        { text: "۸ رأس و ۸ ضلع", correct: true },
+        { text: "۱۶ رأس و ۸ ضلع", correct: false },
+        { text: "۴ رأس و ۸ ضلع", correct: false }
+      ],
+      explanation: "در هر چندضلعی، تعداد رأس‌ها همیشه با تعداد اضلاع برابر است."
+    },
+    {
+      question: "کدام شکل چندضلعی مقعر است؟",
+      options: [
+        { text: "مربع", correct: false },
+        { text: "مثلث متساوی‌الاضلاع", correct: false },
+        { text: "شکل L", correct: true },
+        { text: "شش‌ضلعی منتظم", correct: false }
+      ],
+      explanation: "در چندضلعی مقعر، حداقل یک زاویه داخلی بیشتر از ۱۸۰ درجه است. شکل L یک زاویه داخلی ۲۷۰ درجه دارد."
+    },
+    {
+      question: "کدام گزینه درباره چندضلعی صحیح است؟",
+      options: [
+        { text: "چندضلعی فقط از خط‌های راست تشکیل شده", correct: true },
+        { text: "چندضلعی می‌تواند خط خمیده داشته باشد", correct: false },
+        { text: "چندضلعی لازم نیست بسته باشد", correct: false },
+        { text: "چندضلعی می‌تواند اضلاع متقاطع داشته باشد", correct: false }
+      ],
+      explanation: "چندضلعی باید سه شرط را داشته باشد: فقط از پاره‌خط‌های راست، بسته باشد، اضلاعش همدیگر را قطع نکنند."
+    },
+    {
+      question: "مثلث متساوی‌الاضلاع چند خط تقارن دارد؟",
+      options: [
+        { text: "۱ خط", correct: false },
+        { text: "۲ خط", correct: false },
+        { text: "۳ خط", correct: true },
+        { text: "۴ خط", correct: false }
+      ],
+      explanation: "مثلث متساوی‌الاضلاع ۳ خط تقارن دارد که هر کدام از یک رأس به وسط ضلع مقابل می‌روند."
+    }
+  ],
+  stage2: [
+    {
+      question: "آیا دایره یک چندضلعی است؟",
+      options: [
+        { text: "بله، چون بسته است", correct: false },
+        { text: "بله، چون ضلع دارد", correct: false },
+        { text: "خیر، چون از خط خمیده تشکیل شده", correct: true },
+        { text: "خیر، چون منتظم نیست", correct: false }
+      ],
+      explanation: "دایره چندضلعی نیست! چون چندضلعی باید فقط از پاره‌خط‌های راست تشکیل شده باشد."
+    },
+    {
+      question: "آیا مستطیل یک چندضلعی منتظم است؟",
+      options: [
+        { text: "بله، چون زاویه‌هایش برابرند", correct: false },
+        { text: "بله، چون چهارضلعی است", correct: false },
+        { text: "خیر، چون اضلاعش برابر نیستند", correct: true },
+        { text: "خیر، چون مرکز تقارن ندارد", correct: false }
+      ],
+      explanation: "مستطیل منتظم نیست! با اینکه تمام زاویه‌هایش ۹۰ درجه هستند، اما اضلاعش برابر نیستند."
+    },
+    {
+      question: "آیا لوزی یک چندضلعی منتظم است؟",
+      options: [
+        { text: "بله، چون اضلاعش برابرند", correct: false },
+        { text: "بله، چون چهارضلعی است", correct: false },
+        { text: "خیر، چون زاویه‌هایش برابر نیستند", correct: true },
+        { text: "خیر، چون خط تقارن ندارد", correct: false }
+      ],
+      explanation: "لوزی منتظم نیست! با اینکه تمام اضلاعش برابرند، اما زاویه‌هایش برابر نیستند."
+    },
+    {
+      question: "آیا هر چندضلعی منتظم، محدب است؟",
+      options: [
+        { text: "بله، همیشه", correct: true },
+        { text: "خیر، هیچ‌وقت", correct: false },
+        { text: "فقط در برخی موارد", correct: false },
+        { text: "بستگی به تعداد اضلاع دارد", correct: false }
+      ],
+      explanation: "درست است! هر چندضلعی منتظم حتماً محدب است."
+    },
+    {
+      question: "آیا هر چندضلعی محدب، منتظم است؟",
+      options: [
+        { text: "بله، همیشه", correct: false },
+        { text: "خیر، مثل مستطیل", correct: true },
+        { text: "فقط در مربع", correct: false },
+        { text: "بستگی به تعداد اضلاع دارد", correct: false }
+      ],
+      explanation: "خیر! مستطیل محدب است اما منتظم نیست."
+    },
+    {
+      question: "آیا مثلث متساوی‌الاضلاع مرکز تقارن دارد؟",
+      options: [
+        { text: "بله، چون منتظم است", correct: false },
+        { text: "بله، چون ۳ خط تقارن دارد", correct: false },
+        { text: "خیر، چون با چرخش ۱۸۰ درجه روی خودش منطبق نمی‌شود", correct: true },
+        { text: "خیر، چون مثلث است", correct: false }
+      ],
+      explanation: "مثلث متساوی‌الاضلاع مرکز تقارن ندارد! با چرخش ۱۸۰ درجه، رأس بالایی‌اش پایین می‌آید."
+    },
+    {
+      question: "آیا شکلی که اضلاعش همدیگر را قطع کنند، چندضلعی است؟",
+      options: [
+        { text: "بله، چون از پاره‌خط تشکیل شده", correct: false },
+        { text: "بله، چون بسته است", correct: false },
+        { text: "خیر، چون اضلاعش همدیگر را قطع می‌کنند", correct: true },
+        { text: "بستگی به شکل دارد", correct: false }
+      ],
+      explanation: "خیر! یکی از شروط اصلی چندضلعی این است که اضلاع غیر مجاورش همدیگر را قطع نکنند."
+    },
+    {
+      question: "آیا مربع هم خط تقارن دارد و هم مرکز تقارن؟",
+      options: [
+        { text: "فقط خط تقارن دارد", correct: false },
+        { text: "فقط مرکز تقارن دارد", correct: false },
+        { text: "هر دو را دارد", correct: true },
+        { text: "هیچ‌کدام را ندارد", correct: false }
+      ],
+      explanation: "درست است! مربع ۴ خط تقارن دارد و مرکز تقارن هم دارد."
+    },
+    {
+      question: "آیا شش‌ضلعی منتظم مرکز تقارن دارد؟",
+      options: [
+        { text: "خیر، چون شش‌ضلعی است", correct: false },
+        { text: "خیر، چون منتظم است", correct: false },
+        { text: "بله، چون با ۱۸۰ درجه چرخش روی خودش منطبق می‌شود", correct: true },
+        { text: "بستگی به اندازه اضلاع دارد", correct: false }
+      ],
+      explanation: "درست است! شش‌ضلعی منتظم مرکز تقارن دارد."
+    },
+    {
+      question: "آیا مثلث متساوی‌الساقین (غیر متساوی‌الاضلاع) منتظم است؟",
+      options: [
+        { text: "بله، چون دو ضلع برابر دارد", correct: false },
+        { text: "بله، چون خط تقارن دارد", correct: false },
+        { text: "خیر، چون همه اضلاعش برابر نیستند", correct: true },
+        { text: "خیر، چون زاویه‌هایش برابر نیستند", correct: false }
+      ],
+      explanation: "خیر! منتظم بودن یعنی «همه» اضلاع و «همه» زاویه‌ها برابر باشند."
+    }
+  ],
+  stage3: [
+    {
+      difficulty: 'easy',
+      question: "مربع چند خط تقارن دارد؟",
+      options: [
+        { text: "۱ خط", correct: false },
+        { text: "۲ خط", correct: false },
+        { text: "۴ خط", correct: true },
+        { text: "۸ خط", correct: false }
+      ],
+      explanation: "مربع ۴ خط تقارن دارد: ۲ قطر و ۲ خط که از وسط اضلاع مقابل می‌گذرند."
+    },
+    {
+      difficulty: 'easy',
+      question: "کدام شکل منتظم است؟",
+      options: [
+        { text: "مستطیل", correct: false },
+        { text: "شش‌ضلعی منتظم", correct: true },
+        { text: "لوزی", correct: false },
+        { text: "ذوزنقه", correct: false }
+      ],
+      explanation: "شش‌ضلعی منتظم هم ۶ ضلع برابر دارد و هم ۶ زاویه برابر."
+    },
+    {
+      difficulty: 'easy',
+      question: "یک پنج‌ضلعی چند رأس دارد؟",
+      options: [
+        { text: "۴ رأس", correct: false },
+        { text: "۵ رأس", correct: true },
+        { text: "۶ رأس", correct: false },
+        { text: "۱۰ رأس", correct: false }
+      ],
+      explanation: "در هر چندضلعی، تعداد رأس‌ها برابر با تعداد اضلاع است."
+    },
+    {
+      difficulty: 'medium',
+      question: "کدام شکل مرکز تقارن دارد؟",
+      options: [
+        { text: "مثلث متساوی‌الاضلاع", correct: false },
+        { text: "مثلث متساوی‌الساقین", correct: false },
+        { text: "لوزی", correct: true },
+        { text: "مثلث قائم‌الزاویه", correct: false }
+      ],
+      explanation: "لوزی مرکز تقارن دارد. با چرخش ۱۸۰ درجه حول نقطه تقاطع قطرها، روی خودش منطبق می‌شود."
+    },
+    {
+      difficulty: 'medium',
+      question: "ستاره پنج‌پر محدب است یا مقعر؟",
+      options: [
+        { text: "محدب", correct: false },
+        { text: "مقعر", correct: true },
+        { text: "نه محدب و نه مقعر", correct: false },
+        { text: "هم محدب و هم مقعر", correct: false }
+      ],
+      explanation: "ستاره پنج‌پر مقعر است. چند رأس آن به سمت داخل خم شده و زاویه‌های داخلی بیشتر از ۱۸۰ درجه دارد."
+    },
+    {
+      difficulty: 'medium',
+      question: "کدام چندضلعی هم خط تقارن دارد و هم مرکز تقارن؟",
+      options: [
+        { text: "مثلث متساوی‌الاضلاع", correct: false },
+        { text: "پنج‌ضلعی منتظم", correct: false },
+        { text: "هشت‌ضلعی منتظم", correct: true },
+        { text: "هفت‌ضلعی منتظم", correct: false }
+      ],
+      explanation: "چندضلعی‌های منتظم با تعداد زوج اضلاع هم خط تقارن دارند و هم مرکز تقارن."
+    },
+    {
+      difficulty: 'hard',
+      question: "اگر یک چندضلعی منتظم ۱۲ خط تقارن داشته باشد، چند ضلع دارد؟",
+      options: [
+        { text: "۶ ضلع", correct: false },
+        { text: "۱۰ ضلع", correct: false },
+        { text: "۱۲ ضلع", correct: true },
+        { text: "۲۴ ضلع", correct: false }
+      ],
+      explanation: "چندضلعی منتظم n ضلعی، n خط تقارن دارد. پس ۱۲ خط تقارن = ۱۲ ضلع."
+    },
+    {
+      difficulty: 'hard',
+      question: "کدام گزینه درباره مربع و لوزی صحیح است؟",
+      options: [
+        { text: "هر لوزی یک مربع است", correct: false },
+        { text: "هر مربع یک لوزی است", correct: true },
+        { text: "هیچ‌کدام دیگری نیستند", correct: false },
+        { text: "مربع و لوزی یکی هستند", correct: false }
+      ],
+      explanation: "هر مربع یک لوزی است (چون ۴ ضلع برابر دارد) اما هر لوزی مربع نیست."
+    },
+    {
+      difficulty: 'hard',
+      question: "کدام شکل خط تقارن دارد اما مرکز تقارن ندارد؟",
+      options: [
+        { text: "مربع", correct: false },
+        { text: "مستطیل", correct: false },
+        { text: "پنج‌ضلعی منتظم", correct: true },
+        { text: "شش‌ضلعی منتظم", correct: false }
+      ],
+      explanation: "پنج‌ضلعی منتظم ۵ خط تقارن دارد اما چون تعداد اضلاعش فرد است، مرکز تقارن ندارد."
+    },
+    {
+      difficulty: 'hard',
+      question: "تعداد خطوط تقارن یک ده‌ضلعی منتظم چند تاست؟",
+      options: [
+        { text: "۵ خط", correct: false },
+        { text: "۱۰ خط", correct: true },
+        { text: "۲۰ خط", correct: false },
+        { text: "۳۶ خط", correct: false }
+      ],
+      explanation: "چندضلعی منتظم n ضلعی، n خط تقارن دارد. پس ده‌ضلعی منتظم ۱۰ خط تقارن دارد."
+    }
+  ]
+};
+
+const teachingContent = {
+  stage1: {
+    title: "🔍 معرفی و ویژگی چندضلعی‌ها",
+    subtitle: "بیا با هم دنیای شکل‌ها رو کشف کنیم!",
+    sections: [
+      {
+        title: "📐 چندضلعی چیست؟",
+        content: `
+          <p>چندضلعی یک شکل هندسی بسته است که از چند پاره‌خط راست تشکیل شده و اضلاع آن همدیگر را قطع نمی‌کنند.</p>
+          <div class="teach-svg-box">
+            <svg viewBox="0 0 200 100">
+              <polygon points="30,20 70,20 70,80 30,80" fill="#ff6b9d" stroke="#c44569" stroke-width="2"/>
+              <text x="50" y="55" text-anchor="middle" fill="white" font-size="14" font-weight="bold">مربع</text>
+              <circle cx="150" cy="50" r="30" fill="#88d8b0" stroke="#28a745" stroke-width="2"/>
+              <text x="150" y="55" text-anchor="middle" fill="#155724" font-size="12" font-weight="bold">دایره</text>
+            </svg>
+            <div class="caption">مربع چندضلعی است، اما دایره نه!</div>
+          </div>
+          <div class="key-point">
+            <div class="kp-title">💡 نکته کلیدی:</div>
+            <p>چندضلعی باید ۳ شرط داشته باشد: ۱) فقط از خط‌های راست ۲) بسته باشد ۳) اضلاعش همدیگر را قطع نکنند</p>
+          </div>
+        `
+      },
+      {
+        title: "⭐ چندضلعی منتظم",
+        content: `
+          <p>چندضلعی منتظم شکلی است که <strong>همه اضلاعش برابر</strong> و <strong>همه زاویه‌هایش برابر</strong> باشند.</p>
+          <div class="teach-svg-box">
+            <svg viewBox="0 0 200 100">
+              <polygon points="50,10 90,10 90,90 50,90" fill="#ffd3b6" stroke="#c44569" stroke-width="2"/>
+              <text x="70" y="55" text-anchor="middle" fill="#c44569" font-size="12" font-weight="bold">مربع</text>
+              <rect x="120" y="20" width="70" height="60" fill="#a8e6cf" stroke="#28a745" stroke-width="2"/>
+              <text x="155" y="55" text-anchor="middle" fill="#155724" font-size="12" font-weight="bold">مستطیل</text>
+            </svg>
+            <div class="caption">مربع منتظم است، اما مستطیل نه!</div>
+          </div>
+          <div class="warning-point">
+            <div class="wp-title">⚠️ اشتباه رایج:</div>
+            <p>مستطیل منتظم نیست! چون با اینکه زاویه‌هایش برابرند، اما اضلاعش برابر نیستند.</p>
+          </div>
+        `
+      },
+      {
+        title: "📏 محدب و مقعر",
+        content: `
+          <p><strong>چندضلعی محدب:</strong> همه زاویه‌های داخلی‌اش کمتر از ۱۸۰ درجه است.</p>
+          <p><strong>چندضلعی مقعر:</strong> حداقل یک زاویه داخلی‌اش بیشتر از ۱۸۰ درجه است (به سمت داخل خم شده).</p>
+          <div class="teach-svg-box">
+            <svg viewBox="0 0 200 100">
+              <polygon points="30,20 70,20 70,80 30,80" fill="#88d8b0" stroke="#28a745" stroke-width="2"/>
+              <text x="50" y="55" text-anchor="middle" fill="#155724" font-size="12" font-weight="bold">محدب</text>
+              <polygon points="120,20 180,20 180,50 150,50 150,80 120,80" fill="#ff8b94" stroke="#dc3545" stroke-width="2"/>
+              <text x="150" y="55" text-anchor="middle" fill="#721c24" font-size="11" font-weight="bold">مقعر</text>
+            </svg>
+            <div class="caption">مربع محدب است، شکل L مقعر است!</div>
+          </div>
+        `
+      },
+      {
+        title: "🔷 تقارن در چندضلعی‌ها",
+        content: `
+          <p><strong>خط تقارن:</strong> خطی که شکل را به دو نیمه کاملاً منطبق تقسیم می‌کند.</p>
+          <p><strong>مرکز تقارن:</strong> نقطه‌ای که با چرخش ۱۸۰ درجه حول آن، شکل روی خودش منطبق شود.</p>
+          <div class="teach-svg-box">
+            <svg viewBox="0 0 200 100">
+              <polygon points="50,10 90,90 10,90" fill="#ff6b9d" stroke="#c44569" stroke-width="2"/>
+              <line x1="50" y1="10" x2="50" y2="90" stroke="#c44569" stroke-width="2" stroke-dasharray="5,5"/>
+              <text x="50" y="100" text-anchor="middle" fill="#c44569" font-size="11" font-weight="bold">۳ خط تقارن</text>
+            </svg>
+            <div class="caption">مثلث متساوی‌الاضلاع: ۳ خط تقارن، بدون مرکز تقارن</div>
+          </div>
+          <div class="key-point">
+            <div class="kp-title">💡 نکته طلایی:</div>
+            <p>چندضلعی‌های منتظم با تعداد <strong>زوج</strong> اضلاع (مربع، شش‌ضلعی) مرکز تقارن دارند، اما با تعداد <strong>فرد</strong> (مثلث، پنج‌ضلعی) مرکز تقارن ندارند!</p>
+          </div>
+        `
+      }
+    ]
+  },
+  stage2: {
+    title: "💡 اشتباهات رایج",
+    subtitle: "این اشتباه‌ها رو بشناسیم تا دیگه تکرار نشن!",
+    sections: [
+      {
+        title: "❌ اشتباه رایج ۱: دایره چندضلعی است",
+        content: `
+          <p>خیلی‌ها فکر می‌کنند دایره هم چندضلعی است چون بسته است، اما این اشتباه است!</p>
+          <div class="teach-svg-box">
+            <svg viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" fill="#ff6b9d" stroke="#c44569" stroke-width="2"/>
+              <text x="50" y="55" text-anchor="middle" fill="white" font-size="14" font-weight="bold">دایره</text>
+            </svg>
+            <div class="caption">دایره چندضلعی نیست!</div>
+          </div>
+          <div class="warning-point">
+            <div class="wp-title">⚠️ چرا؟</div>
+            <p>چون چندضلعی باید فقط از <strong>پاره‌خط‌های راست</strong> تشکیل شده باشد، اما دایره یک منحنی است!</p>
+          </div>
+        `
+      },
+      {
+        title: "❌ اشتباه رایج ۲: مستطیل منتظم است",
+        content: `
+          <p>مستطیل زاویه‌هایش برابرند (همه ۹۰ درجه)، اما منتظم نیست!</p>
+          <div class="teach-svg-box">
+            <svg viewBox="0 0 120 80">
+              <rect x="10" y="15" width="100" height="50" fill="#ffd3b6" stroke="#c44569" stroke-width="2"/>
+              <text x="60" y="45" text-anchor="middle" fill="#c44569" font-size="12" font-weight="bold">مستطیل</text>
+            </svg>
+            <div class="caption">مستطیل منتظم نیست!</div>
+          </div>
+          <div class="warning-point">
+            <div class="wp-title">⚠️ چرا؟</div>
+            <p>چون برای منتظم بودن، هم اضلاع باید برابر باشند و هم زاویه‌ها. مستطیل اضلاع نابرابر دارد!</p>
+          </div>
+        `
+      },
+      {
+        title: "❌ اشتباه رایج ۳: لوزی منتظم است",
+        content: `
+          <p>لوزی اضلاعش برابرند، اما منتظم نیست!</p>
+          <div class="teach-svg-box">
+            <svg viewBox="0 0 100 100">
+              <polygon points="50,10 90,50 50,90 10,50" fill="#c44569" stroke="#8e44ad" stroke-width="2"/>
+              <text x="50" y="55" text-anchor="middle" fill="white" font-size="12" font-weight="bold">لوزی</text>
+            </svg>
+            <div class="caption">لوزی منتظم نیست!</div>
+          </div>
+          <div class="warning-point">
+            <div class="wp-title">⚠️ چرا؟</div>
+            <p>چون زاویه‌های لوزی برابر نیستند (دو تا حاده، دو تا منفرجه). فقط وقتی لوزی مربع شود، منتظم است!</p>
+          </div>
+        `
+      },
+      {
+        title: "❌ اشتباه رایج ۴: مثلث متساوی‌الاضلاع مرکز تقارن دارد",
+        content: `
+          <p>مثلث متساوی‌الاضلاع ۳ خط تقارن دارد، اما مرکز تقارن ندارد!</p>
+          <div class="teach-svg-box">
+            <svg viewBox="0 0 100 100">
+              <polygon points="50,15 85,80 15,80" fill="#ff8b94" stroke="#dc3545" stroke-width="2"/>
+              <text x="50" y="55" text-anchor="middle" fill="white" font-size="11" font-weight="bold">بدون مرکز تقارن</text>
+            </svg>
+            <div class="caption">مثلث متساوی‌الاضلاع مرکز تقارن ندارد!</div>
+          </div>
+          <div class="key-point">
+            <div class="kp-title">💡 تست مرکز تقارن:</div>
+            <p>شکل را ۱۸۰ درجه بچرخان. اگر روی خودش منطبق شد، مرکز تقارن دارد. مثلث با چرخش ۱۸۰ درجه، رأس بالایی‌اش پایین می‌آید و منطبق نمی‌شود!</p>
+          </div>
+        `
+      },
+      {
+        title: "✅ رابطه محدب و منتظم",
+        content: `
+          <div class="key-point">
+            <div class="kp-title">✅ قانون مهم:</div>
+            <p><strong>هر چندضلعی منتظم، محدب است.</strong> (چون همه زاویه‌ها برابرند و نمی‌توانند بیشتر از ۱۸۰ باشند)</p>
+          </div>
+          <div class="warning-point">
+            <div class="wp-title">⚠️ اما برعکسش درست نیست!</div>
+            <p><strong>هر چندضلعی محدب، منتظم نیست.</strong> مثلاً مستطیل محدب است اما منتظم نیست!</p>
+          </div>
+          <div class="example-box">
+            <div class="ex-title">📝 مثال:</div>
+            <p>مستطیل: محدب ✓ | منتظم ✗</p>
+            <p>مربع: محدب ✓ | منتظم ✓</p>
+          </div>
+        `
+      }
+    ]
+  },
+  stage3: {
+    title: "🎯 تقارن در چندضلعی‌های منتظم",
+    subtitle: "حالا بیا با تقارن در چندضلعی‌ها عمیق‌تر آشنا بشیم!",
+    sections: [
+      {
+        title: "📊 قانون تقارن در چندضلعی‌های منتظم",
+        content: `
+          <p>یک قانون بسیار مهم و زیبا وجود دارد:</p>
+          <div class="key-point">
+            <div class="kp-title">💡 قانون طلایی تقارن:</div>
+            <p>چندضلعی منتظم n ضلعی، دقیقاً <strong>n خط تقارن</strong> دارد.</p>
+          </div>
+          <div class="example-box">
+            <div class="ex-title">📝 مثال‌ها:</div>
+            <p>مثلث متساوی‌الاضلاع (۳ ضلع): ۳ خط تقارن</p>
+            <p>مربع (۴ ضلع): ۴ خط تقارن</p>
+            <p>پنج‌ضلعی منتظم (۵ ضلع): ۵ خط تقارن</p>
+            <p>شش‌ضلعی منتظم (۶ ضلع): ۶ خط تقارن</p>
+            <p>ده‌ضلعی منتظم (۱۰ ضلع): ۱۰ خط تقارن</p>
+          </div>
+        `
+      },
+      {
+        title: "🔷 مرکز تقارن در چندضلعی‌های منتظم",
+        content: `
+          <p>همه چندضلعی‌های منتظم خط تقارن دارند، اما آیا همه مرکز تقارن هم دارند؟</p>
+          <div class="warning-point">
+            <div class="wp-title">⚠️ قانون مرکز تقارن:</div>
+            <p>فقط چندضلعی‌های منتظم با تعداد <strong>زوج</strong> اضلاع مرکز تقارن دارند!</p>
+          </div>
+          <div class="example-box">
+            <div class="ex-title">📝 مثال‌ها:</div>
+            <p>مربع (۴ ضلع - زوج): مرکز تقارن دارد ✓</p>
+            <p>شش‌ضلعی منتظم (۶ ضلع - زوج): مرکز تقارن دارد ✓</p>
+            <p>هشت‌ضلعی منتظم (۸ ضلع - زوج): مرکز تقارن دارد ✓</p>
+          </div>
+          <div class="example-box">
+            <div class="ex-title">📝 مثال‌های بدون مرکز تقارن:</div>
+            <p>مثلث متساوی‌الاضلاع (۳ ضلع - فرد): مرکز تقارن ندارد ✗</p>
+            <p>پنج‌ضلعی منتظم (۵ ضلع - فرد): مرکز تقارن ندارد ✗</p>
+            <p>هفت‌ضلعی منتظم (۷ ضلع - فرد): مرکز تقارن ندارد ✗</p>
+          </div>
+        `
+      },
+      {
+        title: "🎯 تست مرکز تقارن",
+        content: `
+          <p>چطور بفهمیم یک شکل مرکز تقارن دارد یا نه؟</p>
+          <div class="key-point">
+            <div class="kp-title">💡 روش تست:</div>
+            <p>شکل را ۱۸۰ درجه (نیم دور) حول یک نقطه بچرخان. اگر شکل دقیقاً روی خودش منطبق شد، آن نقطه مرکز تقارن است.</p>
+          </div>
+          <div class="teach-svg-box">
+            <svg viewBox="0 0 200 100">
+              <rect x="10" y="20" width="70" height="60" fill="#ff6b9d" stroke="#c44569" stroke-width="2"/>
+              <circle cx="45" cy="50" r="3" fill="#c44569"/>
+              <text x="45" y="95" text-anchor="middle" fill="#c44569" font-size="11" font-weight="bold">مربع: دارد</text>
+              <polygon points="150,20 180,80 120,80" fill="#88d8b0" stroke="#28a745" stroke-width="2"/>
+              <circle cx="150" cy="60" r="3" fill="#28a745"/>
+              <text x="150" y="95" text-anchor="middle" fill="#28a745" font-size="11" font-weight="bold">مثلث: ندارد</text>
+            </svg>
+            <div class="caption">مربع با چرخش ۱۸۰ درجه منطبق می‌شود، اما مثلث نه!</div>
+          </div>
+        `
+      },
+      {
+        title: "🌟 رابطه مربع و لوزی",
+        content: `
+          <p>مربع و لوزی هر دو ۴ ضلع برابر دارند، اما تفاوت‌هایی هم دارند:</p>
+          <div class="example-box">
+            <div class="ex-title">📝 شباهت‌ها:</div>
+            <p>هر دو ۴ ضلع برابر دارند</p>
+            <p>هر دو قطرشان همدیگر را نصف می‌کنند</p>
+            <p>هر دو مرکز تقارن دارند</p>
+          </div>
+          <div class="example-box">
+            <div class="ex-title">📝 تفاوت‌ها:</div>
+            <p>مربع: همه زاویه‌ها ۹۰ درجه | لوزی: زاویه‌ها برابر نیستند</p>
+            <p>مربع: ۴ خط تقارن | لوزی: ۲ خط تقارن</p>
+            <p>مربع منتظم است | لوزی منتظم نیست</p>
+          </div>
+          <div class="key-point">
+            <div class="kp-title">💡 نکته مهم:</div>
+            <p>هر مربع یک لوزی است (چون ۴ ضلع برابر دارد)، اما هر لوزی مربع نیست (چون ممکن است زاویه‌هایش ۹۰ درجه نباشد).</p>
+          </div>
+        `
+      }
+    ]
+  }
+};
+
+let playerData = { firstName: '', lastName: '', className: '' };
+let currentStage = 1;
+let currentQuestionIndex = 0;
+let stageQuestions = [];
+let stageStats = { 1: {correct:0, total:0}, 2: {correct:0, total:0}, 3: {correct:0, total:0} };
+let totalScore = 0;
+let answered = false;
+const QUESTIONS_PER_STAGE = 6;
+
+function toPersianNum(num) {
+  return num.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+}
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function selectRandomQuestions(stageNum) {
+  let pool = [...questionsBank['stage' + stageNum]];
+  if (stageNum === 3) {
+    const easy = shuffleArray(pool.filter(q => q.difficulty === 'easy')).slice(0, 2);
+    const medium = shuffleArray(pool.filter(q => q.difficulty === 'medium')).slice(0, 2);
+    const hard = shuffleArray(pool.filter(q => q.difficulty === 'hard')).slice(0, 2);
+    return shuffleArray([...easy, ...medium, ...hard]);
+  }
+  return shuffleArray(pool).slice(0, QUESTIONS_PER_STAGE);
+}
+
+function renderWelcome() {
+  const container = document.getElementById('gameContainer');
+  container.innerHTML = `
+    <h1>🎮 بازی آموزشی چندضلعی‌ها</h1>
+    <p class="subtitle">📚 درس اول - فصل سوم ریاضی هشتم</p>
+    <div class="welcome-screen">
+      <div class="emoji-big">📐</div>
+      <h2>به دنیای جذاب هندسه خوش آمدی! 🌸</h2>
+      <p style="color:#8e44ad; margin-bottom:25px; line-height:1.9; font-size:16px; font-weight:600;">
+        برای شروع بازی، لطفاً اطلاعات زیر را وارد کن:
+      </p>
+      <div class="input-group">
+        <label><span class="icon">👤</span> نام:</label>
+        <input type="text" id="firstName" placeholder="نام خود را وارد کنید">
+      </div>
+      <div class="input-group">
+        <label><span class="icon">👤</span> نام خانوادگی:</label>
+        <input type="text" id="lastName" placeholder="نام خانوادگی خود را وارد کنید">
+      </div>
+      <div class="input-group">
+        <label><span class="icon">🏫</span> کلاس:</label>
+        <input type="text" id="className" placeholder="مثلاً: هشتم الف">
+      </div>
+      <button class="start-btn" id="startBtn" disabled onclick="startGame()">🚀 شروع بازی</button>
+    </div>
+    <div class="footer">
+      💖 طراحی و تولید: <span class="designer">نرگس اکبری</span> | معلم ریاضی پایه هشتم 🌷
+    </div>
+  `;
+  
+  const inputs = ['firstName', 'lastName', 'className'];
+  inputs.forEach(id => {
+    document.getElementById(id).addEventListener('input', checkInputs);
+  });
+}
+
+function checkInputs() {
+  const fn = document.getElementById('firstName').value.trim();
+  const ln = document.getElementById('lastName').value.trim();
+  const cn = document.getElementById('className').value.trim();
+  const btn = document.getElementById('startBtn');
+  if (fn && ln && cn) {
+    btn.disabled = false;
+    playerData = { firstName: fn, lastName: ln, className: cn };
+  } else {
+    btn.disabled = true;
+  }
+}
+
+function startGame() {
+  currentStage = 1;
+  totalScore = 0;
+  stageStats = { 1: {correct:0, total:0}, 2: {correct:0, total:0}, 3: {correct:0, total:0} };
+  renderTeaching();
+}
+
+function renderTeaching() {
+  const container = document.getElementById('gameContainer');
+  const teach = teachingContent['stage' + currentStage];
+  
+  let sectionsHtml = teach.sections.map(section => `
+    <div class="teach-section">
+      <h3>${section.title}</h3>
+      ${section.content}
+    </div>
+  `).join('');
+  
+  container.innerHTML = `
+    <h1>🎮 بازی چندضلعی‌ها</h1>
+    <p class="subtitle">👧 ${playerData.firstName} ${playerData.lastName} | 🏫 ${playerData.className}</p>
+    
+    <div class="info-bar">
+      <div class="info-item">
+        <div class="label">مرحله</div>
+        <div class="value">${toPersianNum(currentStage)}/۳</div>
+      </div>
+      <div class="info-item">
+        <div class="label">امتیاز</div>
+        <div class="value">${toPersianNum(totalScore)} ⭐</div>
+      </div>
+    </div>
+    
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: ${((currentStage - 1) / 3) * 100}%"></div>
+    </div>
+    
+    <div class="teach-header">
+      <div class="teach-num">مرحله ${toPersianNum(currentStage)} از ۳ - بخش آموزش</div>
+      <div class="teach-title">${teach.title}</div>
+      <div class="teach-subtitle">${teach.subtitle}</div>
+    </div>
+    
+    <div class="teach-content">
+      ${sectionsHtml}
+    </div>
+    
+    <button class="start-quiz-btn" onclick="startQuiz()">
+      ✅ متوجه شدم! بریم سراغ سوالات 🎯
+    </button>
+    
+    <div class="footer">
+      💖 طراحی و تولید: <span class="designer">نرگس اکبری</span> | معلم ریاضی پایه هشتم 🌷
+    </div>
+  `;
+}
+
+function startQuiz() {
+  stageQuestions = selectRandomQuestions(currentStage);
+  currentQuestionIndex = 0;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const container = document.getElementById('gameContainer');
+  const q = stageQuestions[currentQuestionIndex];
+  const totalQ = stageQuestions.length;
+  const progress = ((currentStage - 1) / 3) * 100 + (currentQuestionIndex / totalQ) * (100 / 3);
+  
+  const stageNames = {
+    1: '🔍 معرفی و ویژگی چندضلعی‌ها',
+    2: '💡 اشتباهات رایج',
+    3: '🎯 تقارن در چندضلعی‌های منتظم'
+  };
+  
+  let difficultyBadge = '';
+  if (q.difficulty) {
+    const diffLabels = { easy: '🌱 آسان', medium: '🌸 متوسط', hard: '🔥 سخت' };
+    const diffClass = 'diff-' + q.difficulty;
+    difficultyBadge = `<div style="text-align:center;"><span class="difficulty-badge ${diffClass}">${diffLabels[q.difficulty]}</span></div>`;
+  }
+  
+  const optionsHtml = q.options.map((opt, i) => 
+    `<button class="option-btn" onclick="checkAnswer(${i})">${opt.text}</button>`
+  ).join('');
+  
+  container.innerHTML = `
+    <h1>🎮 بازی چندضلعی‌ها</h1>
+    <p class="subtitle">👧 ${playerData.firstName} ${playerData.lastName} | 🏫 ${playerData.className}</p>
+    
+    <div class="info-bar">
+      <div class="info-item">
+        <div class="label">مرحله</div>
+        <div class="value">${toPersianNum(currentStage)}/۳</div>
+      </div>
+      <div class="info-item">
+        <div class="label">سوال</div>
+        <div class="value">${toPersianNum(currentQuestionIndex + 1)}/${toPersianNum(totalQ)}</div>
+      </div>
+      <div class="info-item">
+        <div class="label">امتیاز</div>
+        <div class="value">${toPersianNum(totalScore)} ⭐</div>
+      </div>
+    </div>
+    
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: ${progress}%"></div>
+    </div>
+    
+    <div class="stage-header">
+      <div class="stage-num">مرحله ${toPersianNum(currentStage)} از ۳ - بخش سوالات</div>
+      <div class="stage-title">${stageNames[currentStage]}</div>
+    </div>
+    
+    <div class="question-box">
+      ${difficultyBadge}
+      <div class="question-text">${q.question}</div>
+      <div class="options-grid" id="optionsGrid">
+        ${optionsHtml}
+      </div>
+    </div>
+    
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">سوال بعدی ←</button>
+    
+    <div class="footer">
+      💖 طراحی و تولید: <span class="designer">نرگس اکبری</span> | معلم ریاضی پایه هشتم 🌷
+    </div>
+  `;
+  answered = false;
+}
+
+function checkAnswer(optIdx) {
+  if (answered) return;
+  answered = true;
+  
+  const q = stageQuestions[currentQuestionIndex];
+  const isCorrect = q.options[optIdx].correct;
+  
+  stageStats[currentStage].total++;
+  if (isCorrect) {
+    stageStats[currentStage].correct++;
+    let points = 10;
+    if (q.difficulty === 'medium') points = 15;
+    if (q.difficulty === 'hard') points = 20;
+    totalScore += points;
+  }
+  
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    if (q.options[i].correct) btn.classList.add('correct');
+    else if (i === optIdx && !isCorrect) btn.classList.add('wrong');
+  });
+  
+  const fb = document.getElementById('feedback');
+  if (isCorrect) {
+    let points = 10;
+    if (q.difficulty === 'medium') points = 15;
+    if (q.difficulty === 'hard') points = 20;
+    fb.className = 'feedback show success';
+    fb.innerHTML = `<div class="fb-title">🎉 آفرین! پاسخ درست بود (+${toPersianNum(points)} امتیاز)</div>${q.explanation}`;
+  } else {
+    fb.className = 'feedback show error';
+    fb.innerHTML = `<div class="fb-title">💪 اشکالی نداره! بیا یاد بگیریم</div>${q.explanation}`;
+  }
+  
+  document.getElementById('nextBtn').className = 'next-btn show';
+  document.querySelector('.info-item:nth-child(3) .value').textContent = toPersianNum(totalScore) + ' ⭐';
+}
+
+function nextQuestion() {
+  currentQuestionIndex++;
+  if (currentQuestionIndex >= stageQuestions.length) {
+    if (currentStage < 3) {
+      currentStage++;
+      renderTeaching();
+    } else {
+      renderReport();
+    }
+  } else {
+    renderQuestion();
+  }
+}
+
+function renderReport() {
+  const container = document.getElementById('gameContainer');
+  const totalQuestions = stageStats[1].total + stageStats[2].total + stageStats[3].total;
+  const totalCorrect = stageStats[1].correct + stageStats[2].correct + stageStats[3].correct;
+  const percentage = Math.round((totalCorrect / totalQuestions) * 100);
+  
+  let emoji, message, feedbackText;
+  if (percentage >= 90) {
+    emoji = '🏆';
+    message = 'فوق‌العاده بودی! تو یک نابغه هندسه‌ای! 🌟';
+    feedbackText = 'تسلط کاملی بر مفاهیم چندضلعی‌ها و تقارن داری. آماده‌ای برای درس‌های بعدی فصل سوم! به همین روش ادامه بده! 💪';
+  } else if (percentage >= 70) {
+    emoji = '🌟';
+    message = 'عالی بود! خیلی خوب یاد گرفتی! 🎉';
+    feedbackText = 'درک خیلی خوبی از مفاهیم داری. با کمی تمرین بیشتر، به سطح عالی می‌رسی. تو می‌تونی! 🌸';
+  } else if (percentage >= 50) {
+    emoji = '👍';
+    message = 'خوب بود! ولی جای پیشرفت داری 💪';
+    feedbackText = 'مفاهیم پایه را یاد گرفتی اما نیاز به مرور داری. پیشنهاد می‌کنم بخش آموزش را دوباره بخوانی و بازی را تکرار کنی! 🌷';
+  } else {
+    emoji = '💪';
+    message = 'نگران نباش! با تمرین بیشتر پیشرفت می‌کنی 🌸';
+    feedbackText = 'همه از جایی شروع می‌کنند. پیشنهاد می‌کنم بخش آموزش را با دقت بخوانی و بازی را تکرار کنی. مطمئنم دفعه بعد نتیجه بهتری می‌گیری! 💖';
+  }
+  
+  const stageNames = {
+    1: '🔍 معرفی و ویژگی چندضلعی‌ها',
+    2: '💡 اشتباهات رایج',
+    3: '🎯 تقارن در چندضلعی‌های منتظم'
+  };
+  
+  let stageAnalysis = '';
+  for (let s = 1; s <= 3; s++) {
+    const st = stageStats[s];
+    const pct = st.total > 0 ? Math.round((st.correct / st.total) * 100) : 0;
+    let status = '';
+    if (pct >= 80) status = '✅ عالی';
+    else if (pct >= 50) status = '⚠️ نیاز به تمرین';
+    else status = '💪 نیاز به مرور';
+    
+    stageAnalysis += `
+      <div class="stage-analysis">
+        <h4>${stageNames[s]}</h4>
+        <div class="report-row">
+          <span class="label">پاسخ‌های درست:</span>
+          <span class="value">${toPersianNum(st.correct)} از ${toPersianNum(st.total)} (${toPersianNum(pct)}٪)</span>
+        </div>
+        <div class="report-row">
+          <span class="label">وضعیت:</span>
+          <span class="value">${status}</span>
+        </div>
+      </div>
+    `;
+  }
+  
+  container.innerHTML = `
+    <h1>📊 کارنامه شما</h1>
+    <div class="report-screen">
+      <div class="report-emoji">${emoji}</div>
+      <h2>${message}</h2>
+      <div class="student-name">👧 ${playerData.firstName} ${playerData.lastName}</div>
+      <div style="color:#8e44ad; font-size:16px; font-weight:700;">🏫 کلاس: ${playerData.className}</div>
+      
+      <div class="report-score">${toPersianNum(totalScore)} امتیاز ⭐</div>
+      
+      <div class="report-details">
+        <div class="report-row">
+          <span class="label">📝 تعداد کل سوالات:</span>
+          <span class="value">${toPersianNum(totalQuestions)}</span>
+        </div>
+        <div class="report-row">
+          <span class="label">✅ پاسخ‌های درست:</span>
+          <span class="value" style="color:#28a745;">${toPersianNum(totalCorrect)}</span>
+        </div>
+        <div class="report-row">
+          <span class="label">❌ پاسخ‌های نادرست:</span>
+          <span class="value" style="color:#dc3545;">${toPersianNum(totalQuestions - totalCorrect)}</span>
+        </div>
+        <div class="report-row">
+          <span class="label">🎯 درصد موفقیت:</span>
+          <span class="value">${toPersianNum(percentage)}٪</span>
+        </div>
+      </div>
+      
+      <div class="feedback-message">
+        <div style="font-weight:900; margin-bottom:10px; font-size:18px;">💬 بازخورد معلم:</div>
+        ${feedbackText}
+      </div>
+      
+      <h3 style="color:#8e44ad; margin:25px 0 15px; text-align:right; font-size:20px; font-weight:900;">📈 تحلیل عملکرد در هر مرحله:</h3>
+      ${stageAnalysis}
+      
+      <button class="restart-btn" onclick="restartGame()">🔄 بازی مجدد</button>
+    </div>
+    
+    <div class="footer">
+      💖 طراحی و تولید: <span class="designer">نرگس اکبری</span> | معلم ریاضی پایه هشتم 🌷
+    </div>
+  `;
+}
+
+function restartGame() {
+  renderWelcome();
+}
+
+renderWelcome();
+</script>
+</body>
+</html>
